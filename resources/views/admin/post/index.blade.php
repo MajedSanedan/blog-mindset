@@ -173,7 +173,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="m-0">قائمة المنشورات</h3>
-            <a href="{{ route('admin.categories.create') }}" class="btn btn-add">
+            <a href="{{ route('admin.posts.create') }}" class="btn btn-add">
                 <i class="fas fa-plus me-2"></i>إضافة منشور جديد
             </a>
              <a href="{{ route('admin.dashboard') }}" class="btn btn-add">
@@ -207,12 +207,10 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                            <i class="fas fa-folder"></i>
-                                        </div>
+                                       
                                         <div>
-                                            <strong>{{ $post->name }}</strong>
-                                            <div class="text-muted small">ID: {{ $post->id }}</div>
+                                            <strong>{{ $post->title }}</strong>
+                                          
                                         </div>
                                     </div>
                                 </td>
@@ -226,12 +224,14 @@
                                     <span class="text-muted">لا توجد صورة</span>
                                     @endif
                                 
+                                </td>
+                                <td>{{ $post->user->name }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="/admin/category/edit/{{$post}}" class="btn btn-edit">
+                                        <a href="/admin/post/edit/{{$post->id}}" class="btn btn-edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form action="/admin/category/delete/{{$post->id}}" method="POST" class="d-inline">
+                                        <form action="/admin/post/delete/{{$post->id}}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-delete" onclick="return confirm('هل أنت متأكد من رغبتك في حذف هذه الفئة؟')">
@@ -260,7 +260,7 @@
     </div>
 
     <div class="footer">
-        © 2023 نظام الإدارة - جميع الحقوق محفوظة
+        © 2023  مدونة Mindset - جميع الحقوق محفوظة
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

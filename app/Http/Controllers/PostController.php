@@ -17,23 +17,22 @@ class PostController extends Controller
     }
     public function create()
     {
-        $categories= Category::all();
-        return view('admin.post.create',compact('categories'));
+        $categories = Category::all();
+        return view('admin.post.create', compact('categories'));
     }
     public function store(Request $request)
     {
-     
+
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'user_id' => 'required|exists:users,id',
+            'user_id' => '|exists:users,id',
             'category_ids' => 'array',
             'category_ids.*' => 'exists:categories,id',
         ]);
 
-        if($request->hasFile('image'))
-        {
-              $imageurl = $request->file('image')->storeAs('posts', time().'.'.$request->image->extension(),'public');
+        if ($request->hasFile('image')) {
+            $imageurl = $request->file('image')->storeAs('posts', time() . '.' . $request->image->extension(), 'public');
         }
         $post = Post::create([
             'title' => $request->title,
@@ -46,24 +45,45 @@ class PostController extends Controller
             $post->categories()->attach($request->category_ids);
         }
 
-        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+        return redirect()->route('admin.posts.index')->with('success', 'Post created successfully.');
+    }
+    public function edit(Post $post)
+    {
+        $categories = Category::all(); // كل التصنيفات
+
+        return view('admin.post.edit', compact('post', 'categories'));
     }
 
+    public function show(Post $post){
+
+        return view('posts.show',compact('post'));
+
+    }
     public function update(Request $request, Post $post)
     {
         $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'content' => 'sometimes|required|string',
-            'category_ids' => 'array',
-            'category_ids.*' => 'exists:categories,id',
-        ]);
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'categories' => 'array',
+            'categories.*' => 'exists:categories,id',
 
-        $post->update($request->only('title', 'content'));
+        ]);
+        if ($request->hasFile('image')) {
+            $imageurl = $request->file('image')->storeAs('posts', time() . '.' . $request->image->extension(), 'public');
+        }
+        $post->update($request->only('title', 'content') + ['image' => $imageurl ?? $post->image]);
 
         if ($request->has('category_ids')) {
-            $post->categories()->sync($request->category_ids);
+            $post->categories()->sync($request->categories);
         }
 
-        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
+        return redirect()->route('admin.posts.index')->with('success', 'Post updated successfully.');
+    }
+
+    public function destroy(Post $post)
+    {
+        $post->delete();
+        return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully.');
     }
 }

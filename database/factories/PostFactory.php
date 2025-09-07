@@ -16,8 +16,14 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
+         $this->faker->unique(true);
         return [
-            //
+            'title' => $this->faker->sentence(),
+            'content' => $this->faker->paragraphs(3, true),
+            'category_id' => \App\Models\Category::factory(),
+            'user_id' => \App\Models\User::factory(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

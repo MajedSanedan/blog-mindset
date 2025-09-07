@@ -103,7 +103,7 @@
         .image-preview img {
             max-width: 100%;
             max-height: 100%;
-            display: none;
+            display: flex;
         }
 
         .footer {
